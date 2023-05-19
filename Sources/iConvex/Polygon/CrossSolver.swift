@@ -114,7 +114,6 @@ private struct Edge {
 }
 
 private extension Array where Element == FixVec {
-    
     func sortedEdges(filter boundary: Boundary) -> [Edge] {
         let left = self.mostLeft
         let n = self.count
@@ -130,33 +129,64 @@ private extension Array where Element == FixVec {
         var pi0 = self[i0]
         var pj0 = pi0
 
-        repeat {
+        var i1 = i0.next(n)
+        var j1 = j0.prev(n)
+
+        var pi1 = self[i1]
+        var pj1 = self[j1]
+
+        var iBit = pi1.bitPack
+        var jBit = pj1.bitPack
+        
+        while iBit != jBit {
             let edge: Edge
-            if pi0.bitPack < pj0.bitPack {
-                let i1 = i0.next(n)
-                let pi1 = self[i1]
+
+            if iBit < jBit {
                 edge = Edge(segment: .init(a: pi0, b: pi1), a: i0, b: i1, isDirect: true)
 
                 i0 = i1
                 pi0 = pi1
+                
+                i1 = i1.next(n)
+                pi1 = self[i1]
+                iBit = pi1.bitPack
             } else {
-                let j1 = j0.prev(n)
-                let pj1 = self[j1]
                 edge = Edge(segment: .init(a: pj0, b: pj1), a: j0, b: j1, isDirect: false)
 
                 j0 = j1
                 pj0 = pj1
+                
+                j1 = j1.prev(n)
+                pj1 = self[j1]
+                jBit = pj1.bitPack
             }
             
             if boundary.isIntersectionPossible(segment: edge.segment) {
                 edges.append(edge)
             }
-            
-        } while i0 != j0
+        }
         
+        let iEdge = Edge(segment: .init(a: pi0, b: pi1), a: i0, b: i1, isDirect: true)
+        let jEdge = Edge(segment: .init(a: pj0, b: pj1), a: j0, b: j1, isDirect: false)
+        
+        if pi0.bitPack < pj0.bitPack {
+            if boundary.isIntersectionPossible(segment: iEdge.segment) {
+                edges.append(iEdge)
+            }
+            if boundary.isIntersectionPossible(segment: jEdge.segment) {
+                edges.append(jEdge)
+            }
+        } else {
+            if boundary.isIntersectionPossible(segment: jEdge.segment) {
+                edges.append(jEdge)
+            }
+            if boundary.isIntersectionPossible(segment: iEdge.segment) {
+                edges.append(iEdge)
+            }
+        }
+
         return edges
     }
-
 }
 
 

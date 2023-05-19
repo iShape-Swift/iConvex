@@ -196,7 +196,6 @@ public extension IntersectSolver {
             assert(aSet.count == aPath.count)
             let bSet = Set(bPath)
             assert(bSet.count == bPath.count)
-            
 
             let aArea = Self.directArea(s0: pin0.dot.a, s1: pin1.dot.a, points: a)
             let bArea = Self.directArea(s0: pin0.dot.b, s1: pin1.dot.b, points: b)
