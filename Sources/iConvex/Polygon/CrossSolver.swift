@@ -114,6 +114,7 @@ private struct Edge {
 }
 
 private extension Array where Element == FixVec {
+    
     func sortedEdges(filter boundary: Boundary) -> [Edge] {
         let left = self.mostLeft
         let n = self.count

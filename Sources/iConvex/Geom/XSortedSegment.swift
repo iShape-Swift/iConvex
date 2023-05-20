@@ -148,7 +148,6 @@ public struct XSortedSegment {
         let dxB = b0.x - b1.x
         
         let divider = dxA.mul(dyB) - dyA.mul(dxB)
-        let invert_divider = divider.doubleInvert
         
         let xyA = a0.x.mul(a1.y) - a0.y.mul(a1.x)
         let xyB = b0.x.mul(b1.y) - b0.y.mul(b1.x)
@@ -156,9 +155,9 @@ public struct XSortedSegment {
         let x = xyA.mul(b0.x - b1.x) - (a0.x - a1.x).mul(xyB)
         let y = xyA.mul(b0.y - b1.y) - (a0.y - a1.y).mul(xyB)
 
-        let cx = x.mul(fixDouble: invert_divider)
-        let cy = y.mul(fixDouble: invert_divider)
-
+        let cx = x.div(divider)
+        let cy = y.div(divider)
+        
         return FixVec(cx, cy)
     }
  

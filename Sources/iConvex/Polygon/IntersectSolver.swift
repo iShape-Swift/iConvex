@@ -16,10 +16,21 @@ public struct PinNode {
 }
 
 private struct PointStone {
-    
     let m: MileStone
     let p: FixVec
 }
+
+private extension PinDot {
+
+    var a: PointStone {
+        .init(m: mA, p: p)
+    }
+
+    var b: PointStone {
+        .init(m: mB, p: p)
+    }
+}
+
 
 public struct IntersectSolver {
     
@@ -41,83 +52,7 @@ public struct IntersectSolver {
             j = i
         }
     }
-    
-    /*
-    private static func directArea(s0: PointStone, s1: PointStone, points: [FixVec]) -> FixFloat {
-        guard s0.m != s1.m else {
-            return 0
-        }
-        
-        var area: FixFloat = 0
-        if s0.m.index == s1.m.index {
-            if s0.m.offset < s1.m.offset {
-                area = .max
-            }
-        } else if s0.m.index < s1.m.index {
-            // example from 3 to 6
-            
-            var p0: FixVec
-            var i = s0.m.index
-            if s0.m.offset != 0 {
-                p0 = s0.p
-            } else {
-                p0 = points[i]
-                i += 1
-            }
-            
-            while i < s1.m.index {
-                let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-            
-            if s0.m.offset != 0 {
-                let p1 = s1.p
-                area += p0.bruteCrossProduct(p1)
-            }
-            
-            area = area >> (FixFloat.fractionBits + 1)
-        } else {
-            // example from 5 to 2
-            
-            var p0: FixVec
-            var i = s1.m.index
-            if s1.m.offset != 0 {
-                p0 = s0.p
-            } else {
-                p0 = points[i]
-                i += 1
-            }
-            
-            while i < points.count {
-                let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-            
-            i = 0
-            
-            while i < s0.m.index {
-                let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-            
-            if s0.m.offset != 0 {
-                let p1 = s1.p
-                area += p0.bruteCrossProduct(p1)
-            }
-            
-            area = area >> (FixFloat.fractionBits + 1)
-        }
-        
-        return area
-    }
-    */
-    
+
     private static func directArea(s0: PointStone, s1: PointStone, points: [FixVec]) -> FixFloat {
         guard s0.m != s1.m else {
             return 0
@@ -131,9 +66,11 @@ public struct IntersectSolver {
 
             var i = s0.m.index + 1
             
-            while i <= s1.m.index {
+            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
+            
+            while i < last {
                 let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
+                area += p0.directCrossProduct(p1)
                 p0 = p1
                 i += 1
             }
@@ -143,7 +80,7 @@ public struct IntersectSolver {
             
             while i < points.count {
                 let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
+                area += p0.directCrossProduct(p1)
                 p0 = p1
                 i += 1
             }
@@ -153,13 +90,13 @@ public struct IntersectSolver {
             
             while i < last {
                 let p1 = points[i]
-                area += p0.bruteCrossProduct(p1)
+                area += p0.directCrossProduct(p1)
                 p0 = p1
                 i += 1
             }
         }
         
-        area += p0.bruteCrossProduct(s1.p)
+        area += p0.directCrossProduct(s1.p)
         
         return area >> (FixFloat.fractionBits + 1)
     }
@@ -169,7 +106,7 @@ public struct IntersectSolver {
 private extension FixVec {
     
     @inline(__always)
-    func bruteCrossProduct(_ v: FixVec) -> FixFloat {
+    func directCrossProduct(_ v: FixVec) -> FixFloat {
         v.x * y - x * v.y
     }
 }
@@ -252,18 +189,6 @@ public extension IntersectSolver {
         return area
     }
     
-}
-
-private extension PinDot {
-    
-    var a: PointStone {
-        .init(m: mA, p: p)
-    }
-
-    var b: PointStone {
-        .init(m: mB, p: p)
-    }
-
 }
 
 public struct ABResult {
