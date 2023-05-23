@@ -18,16 +18,25 @@ public extension OverlaySolver {
         guard pins.count > 1 else {
             return .zero
         }
+
+        var points = [FixVec]()
         
-        var p0 = pins[pins.count - 1]
-        for p1 in pins {
-            
-            
-            
-            p0 = p1
-        }
+        let p0 = pins.findFirst
+        var p1 = p0
+        repeat {
+            let p2 = pins.findNext(current: p1, last: p0)
+            if p1.isEndInto {
+                points.directJoin(s0: p1.a, s1: p2.a, points: a)
+            } else {
+                points.directJoin(s0: p1.b, s1: p2.b, points: b)
+            }
+
+            p1 = p2
+        } while p1.i != p0.i
         
-        return .zero
+        assert(points.count == Set(points).count)
+        
+        return points.centroid
     }
     
 }
@@ -92,6 +101,43 @@ extension Pin {
             return true
         default:
             return false
+        }
+    }
+    
+}
+
+extension Array where Element == FixVec {
+    
+    mutating func directJoin(s0: PointStone, s1: PointStone, points: [FixVec]) {
+        self.append(s0.p)
+
+        if s0.m < s1.m {
+            // example from 3 to 6
+
+            var i = s0.m.index + 1
+            
+            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
+            
+            while i < last {
+                self.append(points[i])
+                i += 1
+            }
+        } else {
+            // example from 5 to 2
+            var i = s0.m.index + 1
+            
+            while i < points.count {
+                self.append(points[i])
+                i += 1
+            }
+
+            i = 0
+            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
+            
+            while i < last {
+                self.append(points[i])
+                i += 1
+            }
         }
     }
     

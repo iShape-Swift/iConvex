@@ -115,6 +115,8 @@ public extension OverlaySolver {
             p1 = p2
         } while p1.i != p0.i
 
+        assert(points.count == Set(points).count)
+        
         return Polygon(centroid: points.centroid, path: points)
     }
     
@@ -125,43 +127,5 @@ public struct ABResult {
     public let b: [FixVec]
     public let area: FixFloat
 }
-
-private extension Array where Element == FixVec {
-    
-    mutating func directJoin(s0: PointStone, s1: PointStone, points: [FixVec]) {
-        self.append(s0.p)
-
-        if s0.m < s1.m {
-            // example from 3 to 6
-
-            var i = s0.m.index + 1
-            
-            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
-            
-            while i < last {
-                self.append(points[i])
-                i += 1
-            }
-        } else {
-            // example from 5 to 2
-            var i = s0.m.index + 1
-            
-            while i < points.count {
-                self.append(points[i])
-                i += 1
-            }
-
-            i = 0
-            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
-            
-            while i < last {
-                self.append(points[i])
-                i += 1
-            }
-        }
-    }
-    
-}
-
     
 #endif
