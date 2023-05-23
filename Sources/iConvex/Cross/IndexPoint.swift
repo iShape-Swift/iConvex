@@ -14,5 +14,12 @@ struct IndexPoint {
     
     let index: Int
     let point: FixVec
+    
+    @inlinable
+    var mileStone: MileStone { MileStone(index: index) }
+    
+    @inlinable
+    func mileStone(point: FixVec) -> MileStone {
+        MileStone(index: index, offset: self.point.sqrDistance(point))
+    }
 }
-

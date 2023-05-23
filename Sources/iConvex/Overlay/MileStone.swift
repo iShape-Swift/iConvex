@@ -15,11 +15,13 @@ public struct MileStone: Equatable, Hashable {
     public let index: Int
     public let offset: FixFloat
 
+    @inlinable
     init(index: Int, offset: FixFloat = 0) {
         self.index = index
         self.offset = offset
     }
     
+    @inlinable
     public static func < (lhs: MileStone, rhs: MileStone) -> Bool {
         if lhs.index != rhs.index {
             return lhs.index < rhs.index
@@ -28,6 +30,7 @@ public struct MileStone: Equatable, Hashable {
         return lhs.offset < rhs.offset
     }
     
+    @inlinable
     public static func > (lhs: MileStone, rhs: MileStone) -> Bool {
         if lhs.index != rhs.index {
             return lhs.index > rhs.index
@@ -36,6 +39,7 @@ public struct MileStone: Equatable, Hashable {
         return lhs.offset > rhs.offset
     }
     
+    @inlinable
     public static func >= (lhs: MileStone, rhs: MileStone) -> Bool {
         if lhs.index != rhs.index {
             return lhs.index > rhs.index
@@ -44,17 +48,17 @@ public struct MileStone: Equatable, Hashable {
         return lhs.offset >= rhs.offset
     }
     
+    @inlinable
     public static func == (lhs: MileStone, rhs: MileStone) -> Bool {
         return lhs.index == rhs.index && lhs.offset == rhs.offset
     }
     
+    @inlinable
     public func hash(into hasher: inout Hasher) {
         hasher.combine(index)
         hasher.combine(offset)
     }
-    
-    
-    
+
     @inlinable
     static public func directLength(_ n: Int, m0: MileStone, m1: MileStone) -> Int {
         guard m0 != m1 else {
