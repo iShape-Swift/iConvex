@@ -45,6 +45,10 @@ extension Array where Element == Pin {
             }
         }
         
+        for p in self where p.type != .empty {
+            return p
+        }
+        
         return .zero
     }
     

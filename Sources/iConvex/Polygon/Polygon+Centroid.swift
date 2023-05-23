@@ -19,30 +19,26 @@ public extension Array where Element == FixVec {
         var center = FixVec.zero
         var area: Int64 = 0
 
-        var j = self.count - 1
-        var p0 = self[j]
+        var p0 = self[count - 1]
 
-        for i in 0..<self.count {
-            let p1 = self[i]
-            let e = p1 - p0
-
-            let crossProduct = p1.crossProduct(p0)
+        for p1 in self {
+            let crossProduct = p1.unsafeCrossProduct(p0)
             area += crossProduct
 
             let sp = p0 + p1
-            center = center + sp * crossProduct
+            center = center + sp.unsafeMul(crossProduct)
 
             p0 = p1
-            j = i
         }
 
-        area >>= 1
-        let s = 6 * area
+        let s = 3 * area
 
-        let x = center.x.div(s)
-        let y = center.y.div(s)
+        let x = center.x / s
+        let y = center.y / s
         
-        return Centroid(area: area, center: center)
+        area = area >> (1 + FixFloat.fractionBits)
+        
+        return Centroid(area: area, center: FixVec(x, y))
     }
     
 }

@@ -16,8 +16,7 @@ public extension Array where Element == FixVec {
         var area: FixFloat = 0
         
         for p1 in self {
-            let cross = p1.x * p0.y - p0.x * p1.y
-            area += cross
+            area += p1.unsafeCrossProduct(p0)
             p0 = p1
         }
         
