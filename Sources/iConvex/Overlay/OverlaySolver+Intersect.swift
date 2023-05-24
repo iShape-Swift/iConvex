@@ -8,15 +8,22 @@
 import iFixFloat
 
 public extension OverlaySolver {
+
     
-    static func intersect(polyA a: [FixVec], polyB b: [FixVec]) -> Centroid {
-        let pins = Self.find(polyA: a, polyB: b)
-        return Self.intersect(polyA: a, polyB: b, pins: pins)
+    static func intersect(polyA a: [FixVec], polyB b: [FixVec], bndA: Boundary, bndB: Boundary) -> Centroid {
+        let pins = Self.find(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
+        return Self.intersect(polyA: a, polyB: b, pins: pins, bndA: bndA, bndB: bndB)
     }
     
-    static func intersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin]) -> Centroid {
+    static func intersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin], bndA: Boundary, bndB: Boundary) -> Centroid {
         guard pins.count > 1 else {
-            return .zero
+            if bndA.isOverlap(bndB) {
+                return b.centroid
+            } else if bndB.isOverlap(bndA) {
+                return a.centroid
+            } else {
+                return .zero
+            }
         }
 
         var points = [FixVec]()

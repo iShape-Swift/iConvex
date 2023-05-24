@@ -49,7 +49,6 @@ public struct Pin {
     var b: PointStone {
         .init(m: mB, p: p)
     }
-    
 }
 
 public extension Array where Element == Pin {
@@ -57,5 +56,4 @@ public extension Array where Element == Pin {
     func next(pin: Pin) -> Pin {
         self[pin.i.next(count)]
     }
-    
 }

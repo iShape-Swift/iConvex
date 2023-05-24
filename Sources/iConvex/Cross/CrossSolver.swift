@@ -15,7 +15,12 @@ public struct CrossSolver {
         let bndA = Boundary(points: polyA)
         let bndB = Boundary(points: polyB)
         
-        return Self.bruteIntersect(polyA: polyA, polyB: polyB, bndA: bndA, bndB: bndB)
+        return Self.intersect(polyA: polyA, polyB: polyB, bndA: bndA, bndB: bndB)
     }
 
+    public static func intersect(polyA: [FixVec], polyB: [FixVec], bndA: Boundary, bndB: Boundary) -> [Pin] {
+        // TODO optimal solution for big polygons!
+        return Self.bruteIntersect(polyA: polyA, polyB: polyB, bndA: bndA, bndB: bndB)
+    }
+    
 }

@@ -9,13 +9,13 @@ import iFixFloat
 
 public struct OverlaySolver {
     
-    public static func find(polyA a: [FixVec], polyB b: [FixVec]) -> [Pin] {
-        var pins = CrossSolver.intersect(polyA: a, polyB: b)
+    public static func find(polyA a: [FixVec], polyB b: [FixVec], bndA: Boundary, bndB: Boundary) -> [Pin] {
+        var pins = CrossSolver.intersect(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
 
         guard pins.count > 1 else {
             return pins
         }
-
+        
         var areas = [FixFloat](repeating: 0, count: pins.count)
         
         for i in 0..<pins.count {

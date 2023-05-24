@@ -83,6 +83,20 @@ public struct MileStone: Equatable, Hashable {
         
         return count
     }
+    
+    public static func sameEdgeIndex(_ n: Int, m0: MileStone, m1: MileStone) -> Int {
+        guard m0.index != m1.index else {
+            return m0.index
+        }
+        
+        if m0.offset == 0 && m1.index.next(n) == m0.index {
+            return m1.index
+        } else if m1.offset == 0 && m0.index.next(n) == m1.index {
+            return m0.index
+        }
+        
+        return -1
+    }
 }
 
 #if DEBUG

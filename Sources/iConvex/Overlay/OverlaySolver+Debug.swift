@@ -91,19 +91,22 @@ public extension OverlaySolver {
     }
     
     static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec]) -> Polygon {
-        let pins = Self.find(polyA: a, polyB: b)
-        return Self.debugIntersect(polyA: a, polyB: b, pins: pins)
+        let bndA = Boundary(points: a)
+        let bndB = Boundary(points: b)
+        let pins = Self.find(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
+        return Self.debugIntersect(polyA: a, polyB: b, pins: pins, bndA: bndA, bndB: bndB)
     }
     
-    static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin]) -> Polygon {
+    static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin], bndA: Boundary, bndB: Boundary) -> Polygon {
         guard pins.count > 1 else {
-            if pins.count == 1 {
-                return Polygon(centroid: Centroid(area: 0, center: pins[0].p), path: [pins[0].p])
+            if bndA.isOverlap(bndB) {
+                return Polygon(centroid: b.centroid, path: b)
+            } else if bndB.isOverlap(bndA) {
+                return Polygon(centroid: a.centroid, path: a)
             } else {
                 return .empty
             }
         }
-
         var points = [FixVec]()
         
         let p0 = pins.findFirst
