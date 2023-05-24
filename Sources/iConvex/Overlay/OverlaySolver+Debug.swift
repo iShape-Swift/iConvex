@@ -97,7 +97,11 @@ public extension OverlaySolver {
     
     static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin]) -> Polygon {
         guard pins.count > 1 else {
-            return .empty
+            if pins.count == 1 {
+                return Polygon(centroid: Centroid(area: 0, center: pins[0].p), path: [pins[0].p])
+            } else {
+                return .empty
+            }
         }
 
         var points = [FixVec]()
