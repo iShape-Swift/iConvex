@@ -18,7 +18,11 @@ public struct CrossSolver {
     }
 
     public static func intersect(pathA: [FixVec], pathB: [FixVec], bndA: FixBnd, bndB: FixBnd) -> [Pin] {
-        Self.bruteIntersect(pathA: pathA, pathB: pathB, bndA: bndA, bndB: bndB)
+        if pathA.count * pathB.count <= 50 {
+            return Self.bruteIntersect(pathA: pathA, pathB: pathB, bndA: bndA, bndB: bndB)
+        } else {
+            return Self.scanLineIntersect(pathA: pathA, pathB: pathB, bndA: bndA, bndB: bndB)
+        }
     }
     
 }
