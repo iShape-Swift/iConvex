@@ -2,15 +2,16 @@
 //  OverlaySolver+Find.swift
 //  
 //
-//  Created by Nail Sharipov on 17.05.2023.
+//  Created by Nail Sharipov on 10.07.2023.
 //
 
 import iFixFloat
+import iShape
 
 public struct OverlaySolver {
     
-    public static func find(polyA a: [FixVec], polyB b: [FixVec], bndA: Boundary, bndB: Boundary) -> [Pin] {
-        var pins = CrossSolver.intersect(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
+    public static func find(pathA a: [FixVec], pathB b: [FixVec], bndA: FixBnd, bndB: FixBnd) -> [Pin] {
+        var pins = CrossSolver.intersect(pathA: a, pathB: b, bndA: bndA, bndB: bndB)
 
         guard pins.count > 1 else {
             return pins
@@ -22,8 +23,8 @@ public struct OverlaySolver {
             let pin0 = pins[i]
             let pin1 = pins.next(pin: pin0)
 
-            let aArea = Self.directArea(s0: pin0.a, s1: pin1.a, points: a)
-            let bArea = Self.directArea(s0: pin0.b, s1: pin1.b, points: b)
+            let aArea = a.directArea(s0: pin0.a, s1: pin1.a)
+            let bArea = b.directArea(s0: pin0.b, s1: pin1.b)
             
             let area = aArea - bArea
             areas[i] = area
@@ -56,7 +57,6 @@ public struct OverlaySolver {
                     pins[i].type = .empty_into
                 }
             }
-            
 
 #if DEBUG
             pins[i].a0 = a0 / 1024
@@ -68,62 +68,5 @@ public struct OverlaySolver {
 
         return pins
     }
-
-
-    static func directArea(s0: PointStone, s1: PointStone, points: [FixVec]) -> FixFloat {
-        guard s0.m != s1.m else {
-            return 0
-        }
-
-        var area: FixFloat = 0
-        var p0 = s0.p
-
-        if s0.m < s1.m {
-            // example from 3 to 6
-
-            var i = s0.m.index + 1
-            
-            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
-            
-            while i < last {
-                let p1 = points[i]
-                area += p0.directCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-        } else {
-            // example from 5 to 2
-            var i = s0.m.index + 1
-            
-            while i < points.count {
-                let p1 = points[i]
-                area += p0.directCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-
-            i = 0
-            let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
-            
-            while i < last {
-                let p1 = points[i]
-                area += p0.directCrossProduct(p1)
-                p0 = p1
-                i += 1
-            }
-        }
-        
-        area += p0.directCrossProduct(s1.p)
-        
-        return area >> (FixFloat.fractionBits + 1)
-    }
     
-}
-
-private extension FixVec {
-    
-    @inline(__always)
-    func directCrossProduct(_ v: FixVec) -> FixFloat {
-        v.x * y - x * v.y
-    }
 }

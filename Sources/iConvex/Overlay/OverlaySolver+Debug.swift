@@ -2,15 +2,16 @@
 //  OverlaySolver+Debug.swift
 //  
 //
-//  Created by Nail Sharipov on 23.05.2023.
+//  Created by Nail Sharipov on 10.07.2023.
 //
-
-import iFixFloat
 
 #if DEBUG
 
-public struct Polygon {
-    public static let empty = Polygon(centroid: .zero, path: [])
+import iFixFloat
+import iShape
+
+public struct Convex {
+    public static let empty = Convex(centroid: .zero, path: [])
     public let centroid: Centroid
     public let path: [FixVec]
 }
@@ -19,7 +20,7 @@ public extension OverlaySolver {
     
     static func debugIntersect(a: [FixVec], b: [FixVec]) -> [ABResult] {
         var result: [ABResult] = []
-        let pins = CrossSolver.intersect(polyA: a, polyB: b)
+        let pins = CrossSolver.intersect(pathA: a, pathB: b)
 
         guard !pins.isEmpty else { return [] }
         
@@ -35,12 +36,12 @@ public extension OverlaySolver {
             let bSet = Set(bPath)
             assert(bSet.count == bPath.count)
 
-            let aArea = Self.directArea(s0: pin0.a, s1: pin1.a, points: a)
-            let bArea = Self.directArea(s0: pin0.b, s1: pin1.b, points: b)
+            let aArea = a.directArea(s0: pin0.a, s1: pin1.a)
+            let bArea = b.directArea(s0: pin0.b, s1: pin1.b)
             
-            let area = aArea - bArea
+            let unsafeArea = aArea - bArea
             
-            result.append(ABResult(a: aPath, b: bPath, area: area))
+            result.append(ABResult(a: aPath, b: bPath, unsafeArea: unsafeArea))
         }
         
         return result
@@ -52,9 +53,9 @@ public extension OverlaySolver {
             return []
         }
 
-        var area: [FixVec] = []
+        var unsafeArea: [FixVec] = []
 
-        area.append(s0.p)
+        unsafeArea.append(s0.p)
 
         if s0.m < s1.m {
             // example from 3 to 6
@@ -64,7 +65,7 @@ public extension OverlaySolver {
             let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
             
             while i < last {
-                area.append(points[i])
+                unsafeArea.append(points[i])
                 i += 1
             }
         } else {
@@ -72,7 +73,7 @@ public extension OverlaySolver {
             var i = s0.m.index + 1
             
             while i < points.count {
-                area.append(points[i])
+                unsafeArea.append(points[i])
                 i += 1
             }
 
@@ -80,29 +81,29 @@ public extension OverlaySolver {
             let last = s1.m.offset == 0 ? s1.m.index : s1.m.index + 1
             
             while i < last {
-                area.append(points[i])
+                unsafeArea.append(points[i])
                 i += 1
             }
         }
         
-        area.append(s1.p)
+        unsafeArea.append(s1.p)
         
-        return area
+        return unsafeArea
     }
     
-    static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec]) -> Polygon {
-        let bndA = Boundary(points: a)
-        let bndB = Boundary(points: b)
-        let pins = Self.find(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
-        return Self.debugIntersect(polyA: a, polyB: b, pins: pins, bndA: bndA, bndB: bndB)
+    static func debugIntersect(pathA a: [FixVec], pathB b: [FixVec]) -> Convex {
+        let bndA = FixBnd(points: a)
+        let bndB = FixBnd(points: b)
+        let pins = Self.find(pathA: a, pathB: b, bndA: bndA, bndB: bndB)
+        return Self.debugIntersect(pathA: a, pathB: b, pins: pins, bndA: bndA, bndB: bndB)
     }
     
-    static func debugIntersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin], bndA: Boundary, bndB: Boundary) -> Polygon {
+    static func debugIntersect(pathA a: [FixVec], pathB b: [FixVec], pins: [Pin], bndA: FixBnd, bndB: FixBnd) -> Convex {
         guard pins.count > 1 else {
             if bndA.isOverlap(bndB) {
-                return Polygon(centroid: b.centroid, path: b)
+                return Convex(centroid: b.centroid, path: b)
             } else if bndB.isOverlap(bndA) {
-                return Polygon(centroid: a.centroid, path: a)
+                return Convex(centroid: a.centroid, path: a)
             } else {
                 return .empty
             }
@@ -124,7 +125,7 @@ public extension OverlaySolver {
 
         assert(points.count == Set(points).count)
         
-        return Polygon(centroid: points.centroid, path: points)
+        return Convex(centroid: points.centroid, path: points)
     }
     
 }
@@ -132,7 +133,7 @@ public extension OverlaySolver {
 public struct ABResult {
     public let a: [FixVec]
     public let b: [FixVec]
-    public let area: FixFloat
+    public let unsafeArea: FixFloat
 }
     
 #endif

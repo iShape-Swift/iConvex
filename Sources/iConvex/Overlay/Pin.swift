@@ -2,15 +2,25 @@
 //  Pin.swift
 //  
 //
-//  Created by Nail Sharipov on 20.05.2023.
+//  Created by Nail Sharipov on 10.07.2023.
 //
 
 import iFixFloat
+import iShape
 
-
+@usableFromInline
 struct PointStone {
+    
+    @usableFromInline
     let m: MileStone
+    @usableFromInline
     let p: FixVec
+    
+    @inlinable
+    init(m: MileStone, p: FixVec) {
+        self.m = m
+        self.p = p
+    }
 }
 
 public enum PinType {
@@ -28,10 +38,10 @@ public enum PinType {
 }
 
 public struct Pin {
-   
-    static let zero = Pin(p: .zero, mA: .zero, mB: .zero, type: .empty)
+
+    public static let zero = Pin(p: .zero, mA: .zero, mB: .zero)
     
-    public internal (set) var i: Int = 0
+    public let i: Int
     public let p: FixVec
     public let mA: MileStone
     public let mB: MileStone
@@ -42,18 +52,39 @@ public struct Pin {
     public var a1: FixFloat = 0
 #endif
     
+    init(i: Int = 0, p: FixVec, mA: MileStone, mB: MileStone, type: PinType = .empty) {
+        self.i = i
+        self.p = p
+        self.mA = mA
+        self.mB = mB
+        self.type = type
+    }
+    
+    init(i: Int, pin: Pin) {
+        self.i = i
+        self.p = pin.p
+        self.mA = pin.mA
+        self.mB = pin.mB
+        self.type = pin.type
+    }
+    
+    @inlinable
     var a: PointStone {
         .init(m: mA, p: p)
     }
 
+    @inlinable
     var b: PointStone {
         .init(m: mB, p: p)
     }
 }
 
-public extension Array where Element == Pin {
+extension Array where Element == Pin {
     
+    @inlinable
     func next(pin: Pin) -> Pin {
-        self[pin.i.next(count)]
+        let i = pin.i + 1
+        let next = i == count ? 0 : i
+        return self[next]
     }
 }

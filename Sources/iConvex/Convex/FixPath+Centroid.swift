@@ -6,6 +6,7 @@
 //
 
 import iFixFloat
+import iShape
 
 public struct Centroid {
     public static let zero = Centroid(area: 0, center: .zero)
@@ -13,7 +14,7 @@ public struct Centroid {
     public let center: FixVec
 }
 
-public extension Array where Element == FixVec {
+public extension FixPath {
     
     var centroid: Centroid {
         let n = count

@@ -2,25 +2,23 @@
 //  CrossSolver.swift
 //  
 //
-//  Created by Nail Sharipov on 20.05.2023.
+//  Created by Nail Sharipov on 10.07.2023.
 //
 
 import iFixFloat
-
-import iFixFloat
+import iShape
 
 public struct CrossSolver {
     
-    public static func intersect(polyA: [FixVec], polyB: [FixVec]) -> [Pin] {
-        let bndA = Boundary(points: polyA)
-        let bndB = Boundary(points: polyB)
+    public static func intersect(pathA: [FixVec], pathB: [FixVec]) -> [Pin] {
+        let bndA = FixBnd(points: pathA)
+        let bndB = FixBnd(points: pathB)
         
-        return Self.intersect(polyA: polyA, polyB: polyB, bndA: bndA, bndB: bndB)
+        return Self.intersect(pathA: pathA, pathB: pathB, bndA: bndA, bndB: bndB)
     }
 
-    public static func intersect(polyA: [FixVec], polyB: [FixVec], bndA: Boundary, bndB: Boundary) -> [Pin] {
-        // TODO optimal solution for big polygons!
-        return Self.bruteIntersect(polyA: polyA, polyB: polyB, bndA: bndA, bndB: bndB)
+    public static func intersect(pathA: [FixVec], pathB: [FixVec], bndA: FixBnd, bndB: FixBnd) -> [Pin] {
+        Self.bruteIntersect(pathA: pathA, pathB: pathB, bndA: bndA, bndB: bndB)
     }
     
 }

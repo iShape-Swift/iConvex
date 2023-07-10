@@ -2,20 +2,22 @@
 //  OverlaySolver+Intersect.swift
 //  
 //
-//  Created by Nail Sharipov on 22.05.2023.
+//  Created by Nail Sharipov on 10.07.2023.
 //
 
 import iFixFloat
+import iShape
 
 public extension OverlaySolver {
 
-    
-    static func intersect(polyA a: [FixVec], polyB b: [FixVec], bndA: Boundary, bndB: Boundary) -> Centroid {
-        let pins = Self.find(polyA: a, polyB: b, bndA: bndA, bndB: bndB)
-        return Self.intersect(polyA: a, polyB: b, pins: pins, bndA: bndA, bndB: bndB)
+    @inlinable
+    static func intersect(pathA a: [FixVec], pathB b: [FixVec], bndA: FixBnd, bndB: FixBnd) -> Centroid {
+        let pins = Self.find(pathA: a, pathB: b, bndA: bndA, bndB: bndB)
+        return Self.intersect(pathA: a, pathB: b, pins: pins, bndA: bndA, bndB: bndB)
     }
     
-    static func intersect(polyA a: [FixVec], polyB b: [FixVec], pins: [Pin], bndA: Boundary, bndB: Boundary) -> Centroid {
+    @inlinable
+    static func intersect(pathA a: [FixVec], pathB b: [FixVec], pins: [Pin], bndA: FixBnd, bndB: FixBnd) -> Centroid {
         guard pins.count > 1 else {
             if bndA.isOverlap(bndB) {
                 return b.centroid
@@ -41,8 +43,6 @@ public extension OverlaySolver {
             p1 = p2
         } while p1.i != p0.i
         
-        assert(points.count == Set(points).count)
-        
         return points.centroid
     }
     
@@ -51,6 +51,7 @@ public extension OverlaySolver {
 
 extension Array where Element == Pin {
     
+    @inlinable
     var findFirst: Pin {
         for p in self {
             switch p.type {
@@ -68,6 +69,7 @@ extension Array where Element == Pin {
         return .zero
     }
     
+    @inlinable
     func findNext(current: Pin, last: Pin) -> Pin {
         let isInto = current.isEndInto
         var next = self.next(pin: current)
@@ -93,6 +95,7 @@ extension Array where Element == Pin {
 
 extension Pin {
     
+    @inlinable
     var isEndInto: Bool {
         switch self.type {
         case .into, .empty_into, .out_into:
@@ -102,6 +105,7 @@ extension Pin {
         }
     }
 
+    @inlinable
     var isEndOut: Bool {
         switch self.type {
         case .out, .empty_out, .into_out:
@@ -115,6 +119,7 @@ extension Pin {
 
 extension Array where Element == FixVec {
     
+    @inlinable
     mutating func directJoin(s0: PointStone, s1: PointStone, points: [FixVec]) {
         self.append(s0.p)
 
