@@ -58,8 +58,8 @@ struct IdEdge {
     }
     
     @inlinable
-    func cross(_ other: IdEdge) -> EdgeCross {
-        FixEdge(e0: e0, e1: e1).cross(FixEdge(e0: other.e0, e1: other.e1))
+    func cross(_ other: IdEdge) -> EdgeCross? {
+        EdgeCrosser.cross(a0: e0, a1: e1, b0: other.e0, b1: other.e1)
     }
 
 }

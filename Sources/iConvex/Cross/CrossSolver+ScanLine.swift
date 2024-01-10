@@ -135,11 +135,11 @@ private extension Array where Element == IdEdge {
                 
                 let scanEdge = scanList[scanIndex]
                 
-                let cross = thisEdge.cross(scanEdge)
+                guard let cross = thisEdge.cross(scanEdge) else {
+                    continue
+                }
                 
                 switch cross.type {
-                case .not_cross:
-                    break
                 case .common_end:
                     pins.appendUniq(e0: thisEdge, e1: scanEdge, p: cross.point)
                 case .pure:

@@ -73,11 +73,11 @@ private struct Edge {
             return .init(isCross: false, pin: .zero)
         }
         
-        let cross = FixEdge(e0: p0.point, e1: p1.point).cross(FixEdge(e0: other.p0.point, e1: other.p1.point))
+        guard let cross = EdgeCrosser.cross(a0: p0.point, a1: p1.point, b0: other.p0.point, b1: other.p1.point) else {
+            return CrossResult(isCross: false, pin: .zero)
+        }
         
         switch cross.type {
-        case .not_cross:
-            return CrossResult(isCross: false, pin: .zero)
         case .pure:
             let mA = MileStone(index: p0.index, offset: cross.point.sqrDistance(p0.point))
             let mB = MileStone(index: other.p0.index, offset: cross.point.sqrDistance(other.p0.point))
