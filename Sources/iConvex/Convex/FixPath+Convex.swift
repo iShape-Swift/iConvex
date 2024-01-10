@@ -40,7 +40,7 @@ public extension FixPath {
         return Triangle.isContain(p: point, p0: p0, p1: self[low], p2: self[high])
     }
     
-    var isConvex: ConvexTest {
+    var convexTest: ConvexTest {
         var p0 = self[count - 2]
         var p1 = self[count - 1]
 
