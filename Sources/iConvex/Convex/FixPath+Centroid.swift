@@ -34,7 +34,7 @@ public extension FixPath {
         var p0 = self[n - 1]
 
         for p1 in self {
-            let crossProduct = p1.unsafeCrossProduct(p0)
+            let crossProduct = p1.crossProduct(p0)
             area += crossProduct
 
             center = center + (p0 + p1).unsafeMul(crossProduct)

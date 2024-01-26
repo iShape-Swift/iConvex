@@ -28,7 +28,7 @@ extension Array where Element == FixVec {
             
             while i < last {
                 let p1 = self[i]
-                area -= p0.unsafeCrossProduct(p1)
+                area -= p0.crossProduct(p1)
                 p0 = p1
                 i += 1
             }
@@ -38,7 +38,7 @@ extension Array where Element == FixVec {
             
             while i < count {
                 let p1 = self[i]
-                area -= p0.unsafeCrossProduct(p1)
+                area -= p0.crossProduct(p1)
                 p0 = p1
                 i += 1
             }
@@ -48,13 +48,13 @@ extension Array where Element == FixVec {
             
             while i < last {
                 let p1 = self[i]
-                area -= p0.unsafeCrossProduct(p1)
+                area -= p0.crossProduct(p1)
                 p0 = p1
                 i += 1
             }
         }
         
-        area -= p0.unsafeCrossProduct(s1.p)
+        area -= p0.crossProduct(s1.p)
         
         return area >> (FixFloat.fractionBits + 1)
     }
