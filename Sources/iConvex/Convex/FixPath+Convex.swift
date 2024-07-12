@@ -36,8 +36,13 @@ public extension FixPath {
                 low = mid
             }
         }
-
-        return Triangle.isContain(p: point, p0: p0, p1: self[low], p2: self[high])
+        
+        return Triangle.isContain(
+            p: Point(point),
+            p0: Point(p0),
+            p1: Point(self[low]),
+            p2: Point(self[high])
+        )
     }
     
     var convexTest: ConvexTest {

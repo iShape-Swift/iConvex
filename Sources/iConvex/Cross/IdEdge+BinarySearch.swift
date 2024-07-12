@@ -14,7 +14,7 @@ extension Array where Element == IdEdge {
     /// - Parameters:
     ///   - value: place
     /// - Returns: edge index
-    func findIndexE0(_ value: Int64) -> Int {
+    func findIndexE0(_ value: UInt64) -> Int {
         guard !self.isEmpty else {
             return 0
         }
@@ -53,7 +53,7 @@ extension Array where Element == IdEdge {
     /// - Parameters:
     ///   - value: place
     /// - Returns: edge index
-    func findIndexE1(_ value: Int64) -> Int {
+    func findIndexE1(_ value: UInt64) -> Int {
         guard !self.isEmpty else {
             return 0
         }
@@ -81,14 +81,14 @@ extension Array where Element == IdEdge {
         }
     }
 
-    mutating func removeAllE1(before: Int64) {
+    mutating func removeAllE1(before: UInt64) {
         let n = allE1(before: before)
         if n > 0 {
             self.removeLast(n)
         }
     }
     
-    func allE1(before: Int64) -> Int {
+    func allE1(before: UInt64) -> Int {
         guard !self.isEmpty else { return 0 }
         var i = count - 1
         
